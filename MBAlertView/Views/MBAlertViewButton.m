@@ -52,15 +52,20 @@
     [[self colorForButtonStyle] setFill];   
     [path fill];
     
-    float actualSize = 0;
+    CGFloat actualSize = 0;
+
     [_title sizeWithFont:kButtonFont minFontSize:8 actualFontSize:&actualSize forWidth:self.bounds.size.width - 20 lineBreakMode:NSLineBreakByClipping];
-    CGSize otherSize = [_title sizeWithFont:[UIFont boldSystemFontOfSize:actualSize]];
     
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
+    paragraphStyle.lineBreakMode = NSLineBreakByClipping;
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:actualSize], NSParagraphStyleAttributeName: paragraphStyle, NSForegroundColorAttributeName: [self textColor]};
+
+    CGSize otherSize = [_title sizeWithAttributes:attributes];
+
     CGPoint origin = CGPointMake(self.bounds.size.width/2.0 - otherSize.width/2.0, self.bounds.size.height/2.0 - otherSize.height/2.0);
     CGRect frame = CGRectMake(origin.x, origin.y, otherSize.width, otherSize.height);
     
-    [[self textColor] set];
-    [_title drawInRect:frame withFont:[UIFont boldSystemFontOfSize:actualSize] lineBreakMode:NSLineBreakByClipping];
+    [_title drawInRect:frame withAttributes:attributes];
 }
 
 @end
